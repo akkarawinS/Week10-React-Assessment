@@ -5,13 +5,13 @@ const URL = 'https://67eca027aa794fb3222e43e2.mockapi.io/members';
 export default function Admin() {
     const [data, setData] = useState([]);
     const [input, setInput] = useState({ name: '', lastname: '', position: '' });
-    useEffect(() => {
-        const getData = async () => {
-            const res = await fetch(URL);
-            const data = await res.json();
-            setData(data);
-        };
 
+    const getData = async () => {
+        const res = await fetch(URL);
+        const data = await res.json();
+        setData(data);
+    };
+    useEffect(() => {
         getData();
     }, []);
 
@@ -22,11 +22,28 @@ export default function Admin() {
                 'Content-Type': 'application/json',
             }, body: JSON.stringify(inputData),
         });
+
+        if (res.ok) {
+            await getData();
+        }
     }
 
     const saveButton = async () => {
         await handleSave(input);
         setInput({ name: '', lastname: '', position: '' });
+    };
+
+    const handleDelete = async (id) => {
+        const res = await fetch(`${URL}/${id}`, {
+            method: 'DELETE',
+        });
+        if (res.ok) {
+            await getData();
+        }
+    }
+
+    const deleteButton = async (id) => {
+        await handleDelete(id);
     };
 
     return (
@@ -95,7 +112,13 @@ export default function Admin() {
                                 <td className='border-r border-b p-2.5'>{item.name}</td>
                                 <td className='border-r border-b'>{item.lastname}</td>
                                 <td className='border-r border-b'>{item.position}</td>
-                                <td className='border-r border-b'><button className='cursor-pointer text-red-500 font-bold'>Delete</button></td>
+                                <td className='border-r border-b'>
+                                    <button
+                                        className='cursor-pointer text-red-500 font-bold'
+                                        onClick={() => deleteButton(item.id)}
+                                    >Delete
+                                    </button>
+                                </td>
 
                             </tr>
                         ))}
