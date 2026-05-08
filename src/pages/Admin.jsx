@@ -29,6 +29,10 @@ export default function Admin() {
     }
 
     const saveButton = async () => {
+        // if (!input.name.trim() || !input.lastname.trim() || !input.position.trim()) {
+        //     alert("error empty input");
+        //     return;
+        // }
         await handleSave(input);
         setInput({ name: '', lastname: '', position: '' });
     };
